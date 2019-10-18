@@ -1,0 +1,328 @@
+ // dynTicTacToe.cpp
+//Bryan Guerra 
+// uses dynamic board allocation
+//---------------------
+
+  #include <cstdlib>				// system definitions
+  #include <iostream>				// I/O definitions
+  using namespace std;				// make std:: accessible
+
+const int X = 1, O = -1, EMPTY = 0;
+
+int** board;
+  						// playing board
+
+  
+int currentPlayer;				// current player (X or O)
+
+void clearBoard(int dimen) {				// clear the board
+    for (int i = 0; i < dimen; i++)
+      for (int j = 0; j < dimen; j++)
+        board[i][j] = EMPTY;			// every cell is empty
+    currentPlayer = X;				// player X starts
+}
+
+void putMark(int i, int j) {			// mark row i column j
+    
+    board[i][j] = currentPlayer;		// mark with current player
+    currentPlayer = -currentPlayer;	
+    	// switch players
+}
+
+
+bool isWin(int mark, int dimen) {
+        	
+        int possiblilties= dimen* 2 + 2;
+        int win = dimen*mark;	
+        bool winner = true;	// is mark the winner?
+      int incrementRow =0;
+      int incrementCol = 0;
+      //check the columns for winner
+
+      do{
+        int sum = 0;
+        
+        for(int col =0; col<dimen;col++){
+        
+        sum += board[incrementRow][col];
+        } //
+        if(sum == win){
+          return winner;
+          }  
+      incrementRow++;
+
+      }
+      while(incrementRow<dimen);
+      
+      //check the rows for winners
+      do{
+        int sum = 0;
+        for(int row =0; row<dimen;row++){
+        
+        sum += board[row][incrementCol];
+        } //
+        if(sum== win){
+          return winner;
+        }  
+      incrementCol++;
+
+      }
+      while(incrementCol<dimen);
+
+      // check diagnally
+      int sum = 0;
+      for(int row =0, col = 0 ; row<dimen && col<dimen; row++, col++){ 
+        sum += board[row][col];  
+        if(sum== win){
+          return winner;
+        }  
+      }
+      //check diagnally again
+      sum = 0;
+      for(int row = dimen -1, col = 0 ; row>= 0 && col<dimen; row--, col++){
+        sum += board[row][col];  
+        if(sum== win){
+          return winner;
+        }  
+
+      }
+
+      return false;
+}
+
+int getWinner(int dimen) {				// who wins? (EMPTY means tie)
+    if (isWin(X,dimen)) return X;
+    else if (isWin(O,dimen)) return O;
+    else return EMPTY;
+}
+
+
+// void printCleanBoard(int dimen){
+  
+//   int totalboxes = dimen*dimen;
+//    cout << " ";
+
+//   for (int a = 0; a < dimen; a++) { // numbers colums
+//     cout << " " << a;
+//   }
+
+//   cout << endl;
+  
+//   for (int i = 0; i < dimen; i++) { // numbers rows
+//     cout << i <<  " ";
+//     for (int j = 0; j < dimen; j++) { // print out board spots
+//         switch (board[i][j]) {
+//           case X:   
+//             if (j < dimen - 1) {
+//               cout << "X|";
+//             } else {
+//               cout << "X";
+//             }
+//             break;
+//           case O:
+//             if (j < dimen - 1) {     
+//               cout << "O|"; 
+//             } else {
+//               cout << "O";
+//             }
+//             break;
+//           case EMPTY:   
+//             if (j < dimen - 1) {
+//                 cout << " |";
+//             } else {
+//                 cout <<  "  ";
+//             }
+//             break;
+
+//         }
+        
+//     }
+//     cout << endl;
+//     for (int k = 0; k < dimen; k++) { // prints out boundary
+//       if (k == 0) {
+//         cout << "  -+";
+//       } else  if (k == dimen - 1) {
+//         cout << "-";
+//       } else {
+//         cout << "-+";
+//       }
+//     }
+//     cout << endl;
+
+//   }   
+    
+    
+    
+// }
+void printBoard( int dimen ) {	
+
+  
+  //void printBoard(int size) {             // print the board
+  cout << " ";
+
+  for (int colnum = 0; colnum < dimen; colnum++) { // numbers colums
+    cout << " " << colnum;
+  }
+
+  cout << endl;
+  
+  for (int i = 0; i < dimen; i++) { // numbers rows
+    cout << i <<  " ";
+    for (int j = 0; j < dimen; j++) { // print out board spots
+        switch (board[i][j]) {
+          case X:   
+            if (j < dimen - 1) {
+              cout << "X|";
+            } else {
+              cout << "X";
+            }
+            break;
+          case O:
+            if (j < dimen - 1) {     
+              cout << "O|"; 
+            } else {
+              cout << "O";
+            }
+            break;
+          case EMPTY:   
+            if (j < dimen - 1) {
+                cout << " |";
+            } else {
+                cout <<  "  ";
+            }
+            break;
+
+        }
+        
+    }
+    cout << endl;
+    for (int boundry = 0; boundry < dimen; boundry++) { // prints out boundary
+      if (boundry == 0) {
+        cout << "  -+";
+      } else  if (boundry == dimen - 1) {
+        cout << "-";
+      } else {
+        cout << "-+";
+      }
+    }
+    cout << endl;
+
+  }  
+}
+  
+
+
+int main() {					// main program
+int dimension;
+int p1Markx;
+int p2Markx;
+int p1Marky;
+int p2Marky;
+    cout<<"Welcome too a two Player Tick Tack Toe"<<endl; 
+    cout<<"Please select what dimensional square you want your board to be from 3-9"<<endl;
+    cin>>dimension;
+    while(dimension >=10 || dimension<=2){
+      cout<<"Invalid demionsize Please select what dimensional square you want your board to be from 3-9"<<endl;
+    cin>>dimension;
+    }
+    int totalboxes = dimension*dimension;
+    int counter =1;
+    //int board[dimension][dimension]; 
+    
+    // allocate board
+  	board = new int*[dimension];        // allocating space for 3 rows
+  	for (int i = 0; i < dimension; i++) {
+  	  board[i] = new int[dimension];    // allocating space for 3 cols per row
+  	}
+  	
+    clearBoard(dimension);
+    				// clear the board
+
+    printBoard(dimension);
+
+    do{
+    
+        cout<<"Player (1) 'X' go by selecting the cordinates which you want the mark to be placed"<<endl;
+        
+        cout<<"Enter x axis cordinate"<<endl;
+        cin>>p1Markx;
+        while(p1Markx >= dimension || p1Markx < 0 ){
+          cout<<"Invaliad cordinate Enter x axis cordinate"<<endl;
+          cin>>p1Markx;
+        }
+        cout<<"Enter y axis cordinate"<<endl;
+        cin>>p1Marky;
+        while(p1Marky >= dimension || p1Marky < 0){
+          cout<<"Invaliad cordinate Enter x axis cordinate"<<endl;
+          cin>>p1Marky;
+        }
+        
+          while(board[p1Marky][p1Markx]== X || board[p1Marky][p1Markx]== O){
+              cout<<"Sorry that spot is taken please enter valid cordinates"<<endl;
+              cout<<"Enter x axis cordinate"<<endl;
+                cin>>p1Markx;
+                while(p1Markx >= dimension || p1Markx < 0 ){
+                cout<<"Invaliad cordinate Enter x axis cordinate"<<endl;
+                cin>>p1Markx;
+              }
+                cout<<"Enter y axis cordinate"<<endl;
+                cin>>p1Marky;
+                while(p1Marky >= dimension || p2Marky < 0){
+                cout<<"Invaliad cordinate Enter y axis cordinate"<<endl;
+                cin>>p1Marky;
+              }
+        }
+
+        putMark(p1Marky,p1Markx);
+        printBoard(dimension);
+        int winner = getWinner(dimension);
+        if (winner != EMPTY){			// print the winner
+          cout << "  " << (winner == X ? 'X' : 'O') << " wins" << endl;
+          return EXIT_SUCCESS;
+        }
+        else 
+        cout<<"Player (2) 'O' go  by selecting what number you want the mark to go in"<<endl;
+        cout<<"Enter x axis cordinate"<<endl;
+        cin>>p2Markx;
+            while(p2Markx >= dimension || p2Markx < 0 ){
+              cout<<"Invaliad cordinate Enter x axis cordinate"<<endl;
+              cin>>p2Markx;
+            }
+        cout<<"Enter y axis cordinate"<<endl;
+        cin>>p2Marky;
+            while(p2Marky >= dimension || p2Marky < 0){
+              cout<<"Invaliad cordinate Enter x axis cordinate"<<endl;
+              cin>>p2Marky;
+            }
+
+      while(board[p2Marky][p2Markx] == X || board[p2Marky][p2Markx]== O){
+            cout<<"Sorry that spot is taken please enter valid cordinates"<<endl;
+             cout<<"Enter x axis cordinate"<<endl;
+              cin>>p2Markx;
+              while(p2Markx >= dimension || p2Markx < 0 ){
+              cout<<"Invaliad cordinate Enter x axis cordinate"<<endl;
+              cin>>p2Markx;
+            }
+              cout<<"Enter y axis cordinate"<<endl;
+              cin>>p2Marky;
+              while(p2Marky >= dimension || p2Marky < 0){
+              cout<<"Invaliad cordinate Enter y axis cordinate"<<endl;
+              cin>>p1Marky;
+            }
+      }
+        putMark(p2Marky,p2Markx);
+        printBoard(dimension);
+        winner = getWinner(dimension);
+
+      if (winner != EMPTY){			// print the winner
+          cout << "  " << (winner == X ? 'X' : 'O') << " wins" << endl;
+          return EXIT_SUCCESS;
+        }
+          counter+=2;
+  }
+   while(counter < totalboxes);
+    // else
+       cout << "  Tie" << endl;
+    return EXIT_SUCCESS;
+}
+  
